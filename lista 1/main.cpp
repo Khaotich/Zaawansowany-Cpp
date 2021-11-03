@@ -22,9 +22,16 @@ auto add2(const T x, const U y, W oper)
 template <typename T, int size, T value, typename Y>
 auto operator*(Wektor <T, size, value> a, vector<Y> b) -> decltype(a[0] * b[0])
 {
-    auto result = 0;
-    for(int i = 0; i <= b.size(); ++i) result += a[i] * b[i];
-    return result;
+    if(b.size() == 0 || a.len() == 0 || a.len() != b.size())
+    {
+        throw logic_error("Nieprawidłowy rozmiar wektorów!\n");
+    }
+    else
+    {
+        auto result = 0;
+        for(int i = 0; i <= b.size(); ++i) result += a[i] * b[i];
+        return result;
+    }
 }
 
 int main()
@@ -62,6 +69,16 @@ int main()
     cout << "\nTesty do zadania 4: \n";
     Wektor <double, 3, 0.5> wa;
     vector <int> wb = { 2, 4, 6 };
-    cout << "Iloczyn skalarny wektorów różnych typów: " << wa * wb << "\n";
+    
+    try
+    {
+        auto il = wa * wb;
+        cout << "Iloczyn skalarny wektorów różnych typów: " << il << "\n";
+    }
+    catch(const logic_error& e)
+    {
+        cerr << e.what() << '\n';
+    }
+    
     cout << "Value type klasy Wektor: " << typeid(wb).name() << "\n\n";
 }
