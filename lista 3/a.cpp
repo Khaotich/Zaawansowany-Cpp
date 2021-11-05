@@ -13,6 +13,7 @@ A::A(const string& text)
 
 A::A(const A& org)
 {
+    cout << "Konstruktor kopiujący \n";
     string text = org.content;
     char* tmp = new char[text.size() + 1];
     copy(text.begin(), text.end(), tmp);
@@ -20,17 +21,12 @@ A::A(const A& org)
     content = tmp;
 }
 
-//////////////
-A& A::operator=(A&& org){
-   content = move(org.content);
-   return *this;
-}
-
-A::A(A&& org) : content(move(org.content))
+A::A(A&& org) noexcept
 {
+    cout << "Konstruktor przenoszący \n";
+    this->content = org.content;
     org.content = nullptr;
 }
-//////////////
 
 char* A::get()
 {

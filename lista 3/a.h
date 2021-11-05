@@ -14,8 +14,7 @@ private:
 public:
     A(const string& text);
     A(const A& org);
-    A(A&& org);
-    A& operator=(A&& org);
+    A(A&& org) noexcept;
     char* get();
     ~A();
 };
