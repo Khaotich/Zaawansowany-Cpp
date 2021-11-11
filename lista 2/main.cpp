@@ -14,7 +14,7 @@ auto add1(const T x, const U y)
 template <typename T, typename U>
 auto add1(const T* x, const U* y)
 {
-    return x + y;
+    return *x + *y;
 }
 
 template <typename T, typename U>
