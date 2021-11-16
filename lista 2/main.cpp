@@ -81,11 +81,13 @@ int main()
     cout << "Dodanie inta z floatem, któr są przekazane przez wskaźnik: " << add1(*i_pointer, *j_pointer) << "\n";
     const char* k = "a";
     const char* l = "b";
-    cout << "Dodanie char* z char*: " << add2(k, l) << "\n";
+    cout << "Dodanie const char* z const char*: " << add2(k, l) << "\n";
 
     //testy zadanie 6
+    static_assert(hypercube(4, 5)==1024, "Nie działa, zły wynik!");
     cout << "\nTesty do zadania 6: \n";
-    cout << "Obliczenie objętości hipersześcianu o boku 4.5 i 5 wymiarach: " << hypercube(4.5, 5) << "\n";
+    cout << "Obliczenie objętości hipersześcianu o boku 4 i 5 wymiarach: " << hypercube(4, 5) << "\n";
+    cout << "Funkcja jest wywoływana w czasie kompilacji ponieważ, static_assert nie zwraca błędu.\n";
 
     //testy zadanie 7
     cout << "\nTesty do zadania 7: \n";
