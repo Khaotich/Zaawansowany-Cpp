@@ -5,14 +5,14 @@ using namespace std;
 
 //zadanie 1 (lista 1)
 template <typename T, typename U>
-auto add1( T x,  U y)
+auto add1(T x,  U y)
 {
     return x + y;
 }
 
 //zadanie 5(lista 2)
 template <typename T, typename U>
-auto add1( T* x,  U* y)
+auto add1(T* x,  U* y)
 {
     return *x + *y;
 }
@@ -42,7 +42,7 @@ constexpr auto hypercube(T a, U n) -> decltype (pow(a, n))
 
 //zadanie 7 (lista 2)
 template <typename T, typename ... Args>
-T add(T first, Args ... args)
+auto add(T first, Args ... args)
 {
     if constexpr (sizeof...(args) == 0) return first;
     else return first + add(args...);
@@ -78,7 +78,7 @@ int main()
     float j = 2.5;
     int* i_pointer = &i;
     float* j_pointer = &j;
-    cout << "Dodanie inta z floatem, które są przekazane przez wskaźnik: " << add1(i_pointer, j_pointer) << "\n";
+    cout << "Dodanie inta z floatem, które są przekazane przez wskaźnik: " << add1(*i_pointer, *j_pointer) << "\n";
     const char* k = "a";
     const char* l = "b";
     cout << "Dodanie const char* z const char*: " << add1(k, l) << "\n";
@@ -92,4 +92,5 @@ int main()
     //testy zadanie 7
     cout << "\nTesty do zadania 7: \n";
     cout << "Funkcja dodająca do siebie różne typy danych: " << add(1, 1.0, 1.0f) << "\n";
+
 }
