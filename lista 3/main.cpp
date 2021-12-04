@@ -16,11 +16,17 @@ A copy(A&& org)
 }
 
 //Zadanie 10
+// template <typename T>
+// A copy_template(T&& org)
+// {
+//     if(is_lvalue_reference<T>::value) return A(org);
+//     else return A(move(org));
+// }
+
 template <typename T>
 A copy_template(T&& org)
 {
-    if(is_lvalue_reference<T>::value) return A(org);
-    else return A(move(org));
+    return A(forward<T>(org));
 }
 
 int main()

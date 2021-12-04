@@ -15,7 +15,7 @@ public:
     A(const string& text);
     A(const A& org);
     A(A&& org) noexcept;
-    char* get();
+    const char* get();
     ~A();
 };
 

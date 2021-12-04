@@ -28,7 +28,7 @@ A::A(A&& org) noexcept
     org.content = nullptr;
 }
 
-char* A::get()
+const char* A::get()
 {
     return content;
 }
