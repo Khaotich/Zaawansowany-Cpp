@@ -9,27 +9,31 @@ using namespace std;
 //zadanie 1
 int getId()
 {
-  static int id = 0;
-  return ++id;
+  static mutex m_;
+  static int count = 0;
+  thread_local int id = ++count;
+  lock_guard <mutex> lock(m_);
+  return id;
 }
 
 //zadanie 2
-mutex m;
-void getText(string text)
+void getText(const string& text)
 {
+  static mutex m;
   lock_guard <mutex> lock(m);
-  cout << "Thread " << getId() << ": " + text << "\n";
+  cout << "Thread o id " << getId() << ": " + text << "\n";
 }
 
 //zadanie 3
-int run_count = 0;
 void getAsync(launch mode)
 {
+  static int run_count = 0;
   if(run_count < 3)
   {
     ++run_count;
     future <void> f = async(mode, getAsync, mode);
     getText("async x" + to_string(run_count));
+    f.get();
   }
 }
 
