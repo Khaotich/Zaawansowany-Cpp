@@ -1,56 +1,58 @@
-// #include <iostream>
-// #include <vector>
-// #include <thread>
-// #include <future>
-
-// using namespace std;
-
-// double scalar_product(vector <double> x, vector <double> y, promise <double> a)
-// {
-
-// }
-
-// int main()
-// {
-
-// }
-
+#include <iostream>
 #include <vector>
 #include <thread>
 #include <future>
-#include <numeric>
-#include <iostream>
+#include <mutex>
 
 using namespace std;
 
-void get_product(vector<double> x, vector<double> y, promise<double> promise_)
+void get_product(const vector <double> x, const vector <double> y, promise <double> promise_)
 {
-  if((x.size() != y.size()) || x.empty() || y.empty())
+  static mutex m;
+  lock_guard <mutex> lk(m);
+  static int i = -1;
+  
+  if(x.empty() || y.empty())
   {
-    throw logic_error("Niewłaściwe wektory");
+    throw logic_error("Jeden z wektorów jest pusty !!!");
+  }
+  else if(x.size() != y.size())
+  {
+    throw logic_error("Nieprawidłowy rozmiar wektorów !!!");
   }
   else
   {
-    double sum = inner_product(x.begin(), x.end(), y.begin(), 0.0);
-    promise_.set_value(sum);
+    ++i;
+    promise_.set_value(x[i] * y[i]);
   }
-
 }
 
 int main()
 {
-  vector<double> x = {1, 2, 3, 4, 5, 6};
-  vector<double> y = {1, 2, 3, 4, 5, 6};
-
-  promise<double> promise_;
-  future<double> future_ = promise_.get_future();
+  vector <double> x = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+  vector <double> y = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+  int threads_num = 10;
+  double sum = 0.0;
+  vector <pair < thread, future <double>>> threads;
 
   try
   {
-    thread work_thread(get_product, x, y, move(promise_));
+    for(int i = 0; i < threads_num; ++i)
+    {
+        promise <double> pro;
+        future <double> fut = pro.get_future();
+        thread th(get_product, x, y, move(pro));
+        threads.push_back(make_pair(move(th), move(fut)));
+    }
+    for(auto& e : threads)
+    {
+        auto th = move(e.first);
+        auto fut = move(e.second);
+        sum += fut.get();
+        th.join();
+    }
     
-    cout << "result=" << future_.get() << "\n";
-    work_thread.join();
+    cout << "Wynik: " << sum << '\n';
   }
   catch(const logic_error& e)
   {
