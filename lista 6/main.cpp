@@ -2,6 +2,7 @@
 #include <vector>
 #include <thread>
 #include <future>
+#include <numeric>
 
 using namespace std;
 
@@ -37,9 +38,13 @@ int main()
 {
   vector <double> x = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
   vector <double> y = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+  vector <double> z = {1, 2, 3, 4};
+  vector <double> results;
+  
   int threads_num = 10;
-  double sum = 0.0;
-  vector <pair<thread, future <double>>> threads;
+  vector <thread> threads;
+  vector <future<double>> futures;
+
 
   try
   {
@@ -47,22 +52,49 @@ int main()
     {
       promise <double> pro;
       future <double> fut = pro.get_future();
-      thread th(get_product, x, y, move(pro));
-      threads.push_back(make_pair(move(th), move(fut)));
+      
+      if(i<9) 
+      {
+        thread th(get_product, x, y, move(pro));
+        threads.push_back(move(th));
+        futures.push_back(move(fut));
+      }
+      else
+      {
+        thread th(get_product, x, z, move(pro));
+        threads.push_back(move(th));
+        futures.push_back(move(fut));
+      }
     }
   }
   catch(const exception& e)
   {
     cerr << e.what() << '\n';
   }
-  
-  for (auto &e : threads)
+
+  try
   {
-    auto th = move(e.first);
-    auto fut = move(e.second);
-    sum = fut.get();
-    th.join();
+    for (auto &&f : futures)
+    {
+      results.push_back(f.get());
+    }
+  }
+  catch(const std::exception& e)
+  {
+    cerr << e.what() << '\n';
+  }
+  
+  int i = 0;
+  for (auto &&r : results)
+  {
+    ++i;
+    cout << "Wynik iloczynu skalarnego " << i << ": " << r << endl;
   }
 
-  cout << "Wynik: " << sum << '\n';
+  for (auto &&th : threads)
+  {
+    th.join();
+  }
+  
+  cout << "\nSuma iloczynów skalarnych: " << accumulate(results.begin(), results.end(), 0) << '\n';
 }
