@@ -10,11 +10,11 @@ void get_product(const vector<double> x, const vector<double> y, promise<double>
 {
   try
   {
-    if(x.empty() || y.empty())
+    if (x.empty() || y.empty())
     {
       throw logic_error("Jeden z wektorów jest pusty !!!");
     }
-    else if(x.size() != y.size())
+    else if (x.size() != y.size())
     {
       throw logic_error("Nieprawidłowy rozmiar wektorów !!!");
     }
@@ -28,7 +28,7 @@ void get_product(const vector<double> x, const vector<double> y, promise<double>
       promise_.set_value(sum);
     }
   }
-  catch(...)
+  catch (...)
   {
     promise_.set_exception(current_exception());
   }
@@ -36,24 +36,23 @@ void get_product(const vector<double> x, const vector<double> y, promise<double>
 
 int main()
 {
-  vector <double> x = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-  vector <double> y = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-  vector <double> z = {1, 2, 3, 4};
-  vector <double> results;
-  
-  int threads_num = 10;
-  vector <thread> threads;
-  vector <future<double>> futures;
+  vector<double> x = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+  vector<double> y = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+  vector<double> z = {1, 2, 3, 4};
+  vector<double> results;
 
+  int threads_num = 10;
+  vector<thread> threads;
+  vector<future<double>> futures;
 
   try
   {
-    for(int i = 0; i < threads_num; ++i)
+    for (int i = 0; i < threads_num; ++i)
     {
-      promise <double> pro;
-      future <double> fut = pro.get_future();
-      
-      if(i<9) 
+      promise<double> pro;
+      future<double> fut = pro.get_future();
+
+      if (i < 9)
       {
         thread th(get_product, x, y, move(pro));
         threads.push_back(move(th));
@@ -67,7 +66,7 @@ int main()
       }
     }
   }
-  catch(const exception& e)
+  catch (const exception &e)
   {
     cerr << e.what() << '\n';
   }
@@ -79,11 +78,11 @@ int main()
       results.push_back(f.get());
     }
   }
-  catch(const std::exception& e)
+  catch (const std::exception &e)
   {
-    cerr << e.what() << '\n';
+    cerr << "\nBŁĄD: " << e.what() << "\n\n";
   }
-  
+
   int i = 0;
   for (auto &&r : results)
   {
@@ -95,6 +94,6 @@ int main()
   {
     th.join();
   }
-  
+
   cout << "\nSuma iloczynów skalarnych: " << accumulate(results.begin(), results.end(), 0) << '\n';
 }
